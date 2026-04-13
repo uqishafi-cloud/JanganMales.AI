@@ -49,7 +49,7 @@ def process():
         for chunk in text_splitter.split_text(content):
             docs.append(Document(
                 page_content=chunk, 
-                metadata={"job_id": row['id'], "title": row['job_title']}
+                metadata={"job_id": row['id'], "title": row['job_title'], "description": row['job_description']}
             ))
 
     # 3. Kirim ke Qdrant Cloud
