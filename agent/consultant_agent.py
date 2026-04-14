@@ -22,10 +22,34 @@ def consultant_node(state: GraphState):
     
     llm = ChatOpenAI(model="gpt-4o-mini")
     
+    llm = ChatOpenAI(model="gpt-4o-mini")
+    
     if user_role == "hr":
-        prompt = f"Kamu adalah asisten HR. Evaluasi CV kandidat ini terhadap lowongan berikut:\n{job_context}\nTeks CV:\n{cv_text}\nApakah kandidat ini layak untuk direkrut?"
+        prompt = f"""
+        Kamu adalah asisten HR. 
+        PENTING: Jangan pernah berkata kamu tidak bisa membaca dokumen/file CV, karena teks dari dokumen tersebut SUDAH diekstrak ke dalam bentuk teks di bawah ini.
+        
+        Teks CV Kandidat:
+        {cv_text}
+        
+        Lowongan Referensi:
+        {job_context}
+        
+        Tugas: Apakah kandidat ini layak untuk direkrut berdasarkan teks di atas?
+        """
     else:
-        prompt = f"Kamu adalah Konsultan Karir. Teks CV User:\n{cv_text}\nLowongan yang tersedia:\n{job_context}\nBerikan rekomendasi lowongan yang cocok dan saran skill yang perlu ditingkatkan."
+        prompt = f"""
+        Kamu adalah Konsultan Karir. 
+        PENTING: Jangan pernah berkata kamu tidak bisa membaca dokumen/file CV, karena teks dari dokumen tersebut SUDAH diekstrak ke dalam bentuk teks di bawah ini.
+        
+        Teks CV User:
+        {cv_text}
+        
+        Lowongan yang tersedia di database:
+        {job_context}
+        
+        Tugas: Berikan rekomendasi lowongan yang cocok dan saran skill yang perlu ditingkatkan.
+        """
         
     res = llm.invoke(prompt)
     return {"messages": [AIMessage(content=res.content)]}

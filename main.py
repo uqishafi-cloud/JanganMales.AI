@@ -63,13 +63,20 @@ async def process_cv(file: UploadFile = File(...)):
 
 @app.post("/chat")
 async def chat_endpoint(req: ChatRequest):
+    print(f"[DEBUG API] Pesan masuk: '{req.message}'")
+    print(f"[DEBUG API] Panjang teks CV yang diterima: {len(req.cv_text)} karakter")
+    
     inputs = {
         "messages": [HumanMessage(content=req.message)],
         "cv_context": req.cv_text,
         "user_role": req.role
     }
-    result = kerjain_agent.invoke(inputs)
-    return {"reply": result["messages"][-1].content}
-
+    try:
+        result = kerjain_agent.invoke(inputs)
+        return {"reply": result["messages"][-1].content}
+    except Exception as e:
+        print(f"[ERROR] Agent gagal: {e}")
+        raise HTTPException(status_code=500, detail="Terjadi kesalahan pada sistem agen.")
+    
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
