@@ -11,3 +11,5 @@ __pycache__/
 
 # Environment Variables (Untuk API Keys nanti)
 .env
+__pycache__
+.DS_Store

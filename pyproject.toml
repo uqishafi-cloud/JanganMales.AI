@@ -1,19 +1,36 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "kerjain-ai"
+name = "janganmales-ai"
 version = "0.1.0"
 description = "Multi-Agent AI untuk Rekomendasi Pekerjaan & Konsultasi Karir"
-requires-python = ">=3.10"
+authors = []
+readme = "README.md"
+requires-python = ">=3.11, <4.0.0"
 dependencies = [
-    "fastapi>=0.122.0",
-    "langchain>=1.1.0",
-    "langchain-openai>=1.1.0",
-    "langchain-qdrant>=1.1.0",
+    "langchain (>=1.2.0,<2.0.0)",
+    "langchain-qdrant (>=1.1.0,<2.0.0)",
+    "langchain-openai (>=1.1.5,<2.0.0)",
     "langgraph>=1.0.4",
-    "python-dotenv>=1.2.1",
-    "streamlit>=1.51.0",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "pandas (>=2.3.3,<3.0.0)",
+    "openpyxl (>=3.1.5,<4.0.0)",
+    "langfuse (>=3.11.0,<4.0.0)",
+    "langchain-classic (>=1.0.0,<2.0.0)",
+    "streamlit (>=1.52.2,<2.0.0)",
+    "fastapi>=0.122.0",
     "uvicorn>=0.38.0",
+    "pypdf2 (>=3.0.1,<4.0.0)",
+    "python-docx (>=1.2.0,<2.0.0)",
+    "python-multipart (>=0.0.26,<0.0.27)"
 ]
+
+[tool.poetry]
+package-mode = false
+packages = [
+    {include = "agent", from = "src"},
+    {include = "tools", from = "src"}
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
