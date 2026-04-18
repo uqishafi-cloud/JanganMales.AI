@@ -26,7 +26,7 @@ RUN poetry config virtualenvs.create false \
     && poetry install --only main --no-interaction --no-ansi
 
 # Copy the rest of the application code
-COPY src ./src
+COPY . .
 
 # Set PYTHONPATH agar Python dapat menemukan module "agent" yang berada di dalam "src"
 ENV PYTHONPATH="/app/src"
