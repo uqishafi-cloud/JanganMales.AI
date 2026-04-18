@@ -6,23 +6,49 @@ from src.agent.rag_agent import rag_agent_node
 from src.agent.consultant_agent import consultant_node
 
 def supervisor_node(state: GraphState):
-    user_msg = state["messages"][-1].content.lower()
+    print("[LOG] Supervisor Agent aktif.")
+    user_msg = state["messages"][-1].content
     
+    # Prioritas ke Consultant jika ada CV
     if state.get("cv_context"):
+        print("[LOG] CV terdeteksi, mengarahkan ke Consultant Agent.")
         return {"next_route": "consultant_agent"}
         
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    intent_prompt = f"""
-    Tentukan tujuan pertanyaan ini: 'sql' atau 'rag'.
-    - 'sql': Jika terkait data terstruktur (gaji spesifik, lokasi, tipe kerja WFO/WFH, jumlah data, statistik).
-    - 'rag': Jika terkait data deskriptif (tugas, kualifikasi, skill, konsultasi umum).
-    - 'consultant_agent': Jika terkait evaluasi CV atau rekomendasi karir.
-    Pertanyaan: {user_msg}
-    Jawab dengan satu kata saja (sql atau rag).
-    """
-    intent = llm.invoke(intent_prompt).content.strip().lower()
+    from langfuse import Langfuse
+    from langfuse.langchain import CallbackHandler
+    import os
     
-    return {"next_route": "sql_agent" if "sql" in intent else "rag_agent" if "rag" in intent else "consultant_agent"}
+    langfuse_client = Langfuse()
+    prompt_template = langfuse_client.get_prompt("supervisor_agent_prompt", label="latest")
+    
+    system_prompt = prompt_template.compile(user_msg=user_msg)
+    
+    llm = ChatOpenAI(model=os.getenv("LLM_MODEL", "gpt-4o-mini"), temperature=0)
+    langfuse_handler = CallbackHandler()
+    
+    intent_res = llm.invoke(system_prompt, config={"callbacks": [langfuse_handler]})
+    intent = intent_res.content.strip().lower()
+    
+    print(f"[LOG] Intent asli LLM: '{intent}'")
+    
+    # Logika penentuan
+    if "sql" in intent:
+        route = "sql_agent"
+    elif "rag" in intent:
+        route = "rag_agent"
+    elif "consult" in intent:
+        route = "consultant_agent"
+    else:
+        # Fallback jika LLM bertele-tele
+        if any(keyword in user_msg.lower() for keyword in ["berapa", "jumlah", "gaji", "statistik", "lokasi"]):
+            route = "sql_agent"
+        elif any(keyword in user_msg.lower() for keyword in ["evaluasi", "cv", "resume", "rekomendasi"]):
+            route = "consultant_agent"
+        else:
+            route = "rag_agent"
+        
+    print(f"[LOG] Rute terpilih: {route}")
+    return {"next_route": route}
 
 workflow = StateGraph(GraphState)
 workflow.add_node("supervisor", supervisor_node)

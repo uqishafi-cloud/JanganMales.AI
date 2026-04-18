@@ -14,10 +14,10 @@ qdrant_client = QdrantClient(
     url=os.getenv("QDRANT_URL"),
     api_key=os.getenv("QDRANT_API_KEY"),
 )
-embeddings = OpenAIEmbeddings(model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small"))
+embeddings = OpenAIEmbeddings(model=os.getenv("EMBEDDING_MODEL"))
 vector_store = QdrantVectorStore(
     client=qdrant_client,
-    collection_name=os.getenv("QDRANT_COLLECTION_NAME", "job_postings"),
+    collection_name=os.getenv("QDRANT_COLLECTION_NAME"),
     embedding=embeddings,
 )
 

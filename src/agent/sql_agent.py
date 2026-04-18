@@ -2,40 +2,36 @@ import sqlite3
 import os
 from langchain_core.messages import AIMessage
 from langchain_openai import ChatOpenAI
+from langgraph.prebuilt import create_react_agent
 from src.agent.state import GraphState
+from src.tools.sql_tools import get_sql_tools
+from langfuse import Langfuse
+from langfuse.langchain import CallbackHandler
 
 def sql_agent_node(state: GraphState):
     print("[LOG] SQL Agent aktif.")
-    user_msg = state["messages"][-1].content
     user_role = state.get("user_role", "jobseeker")
-    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "dataset", "sql_jobs.db")
     
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    # Ambil prompt dari Langfuse agar disembunyikan dari kode
+    langfuse_client = Langfuse()
+    prompt_template = langfuse_client.get_prompt("sql_agent_prompt", label="latest")
     
-    system_prompt = f"""
-    Kamu adalah Database Expert untuk aplikasi JanganMales.AI.
-    Skema tabel 'jobs': id, job_title, company_name, location, work_type, salary, _scrape_timestamp.
+    # Compile prompt dan pasang variabel dinamis (misal: user_role)
+    system_prompt = prompt_template.compile(user_role=user_role)
     
-    Aturan Ketat:
-    1. Hanya berikan query SELECT. Dilarang keras melakukan operasi manipulasi data lainnya.
-    2. Role pengguna saat ini adalah: '{user_role}'.
-    3. Jika role 'jobseeker', HANYA berikan daftar lowongan yang relevan. Jangan berikan data statistik, agregat, atau rata-rata gaji kompetitor.
-    4. Jika role 'hr', kamu diizinkan memberikan analisis statistik, agregat, atau rata-rata gaji.
+    llm = ChatOpenAI(model=os.getenv("LLM_MODEL", "gpt-4o-mini"), temperature=0)
+    sql_tools = get_sql_tools()
     
-    Keluarkan HANYA query SQL murni tanpa format markdown.
-    """
+    # Buat agent mandiri yang menggunakan system prompt dari Langfuse dan toolkit SQL
+    sql_agent = create_react_agent(llm, tools=sql_tools, prompt=system_prompt)
     
-    query = llm.invoke([("system", system_prompt), ("human", user_msg)]).content.strip()
+    # Callback handler untuk langfuse
+    langfuse_handler = CallbackHandler()
     
-    try:
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        conn.close()
-        result_text = f"Data mentah: {str(rows)}"
-    except Exception as e:
-        result_text = f"Terjadi kesalahan query: {str(e)}"
-
-    final_answer = llm.invoke(f"Rangkum hasil database ini dengan bahasa natural untuk user ({user_role}): {result_text}").content
-    return {"messages": [AIMessage(content=final_answer)]}
+    # Jalankan agent dengan seluruh riwayat obrolan user dan pass callbacks
+    response = sql_agent.invoke(
+        {"messages": state["messages"]},
+        config={"callbacks": [langfuse_handler]}
+    )
+    
+    return {"messages": [response["messages"][-1]]}
