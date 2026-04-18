@@ -5,49 +5,44 @@ from qdrant_client import QdrantClient
 from langchain_core.messages import AIMessage
 from src.agent.state import GraphState
 
+from langfuse import Langfuse
+from langfuse.langchain import CallbackHandler
+from langgraph.prebuilt import create_react_agent
+from src.tools.consultant_tools import match_jobs_by_cv
+
 def consultant_node(state: GraphState):
     print("[LOG] Consultant Agent aktif.")
     cv_text = state.get("cv_context", "")
     user_role = state.get("user_role", "jobseeker")
     
-    client = QdrantClient(url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_API_KEY"))
-    vector_store = QdrantVectorStore(
-        client=client, 
-        collection_name="indonesian_jobs", 
-        embedding=OpenAIEmbeddings(model="text-embedding-3-small")
-    )
-    
-    matched_jobs = vector_store.similarity_search(cv_text, k=3)
-    job_context = "\n".join([j.page_content for j in matched_jobs])
-    
-    llm = ChatOpenAI(model="gpt-4o-mini")
+    llm = ChatOpenAI(model=os.getenv("LLM_MODEL"))
+        
+    langfuse_client = Langfuse()
+    prompt_template = langfuse_client.get_prompt("consultant_agent_prompt", label="latest")
     
     if user_role == "hr":
-        prompt = f"""
-        Kamu adalah asisten HR. 
-        PENTING: Jangan pernah berkata kamu tidak bisa membaca dokumen/file CV, karena teks dari dokumen tersebut SUDAH diekstrak ke dalam bentuk teks di bawah ini.
-        
-        Teks CV Kandidat:
-        {cv_text}
-        
-        Lowongan Referensi:
-        {job_context}
-        
-        Tugas: Apakah kandidat ini layak untuk direkrut berdasarkan teks di atas?
-        """
+        role_title = "asisten HR"
+        task_instruction = "Langkah 3: Berdasarkan lowongan yang didapat dari tool, apakah kandidat ini layak untuk direkrut? Berikan alasannya."
+        kandidat_tag = "Kandidat"
     else:
-        prompt = f"""
-        Kamu adalah Konsultan Karir. 
-        PENTING: Jangan pernah berkata kamu tidak bisa membaca dokumen/file CV, karena teks dari dokumen tersebut SUDAH diekstrak ke dalam bentuk teks di bawah ini.
+        role_title = "Konsultan Karir"
+        task_instruction = "Langkah 3: Berikan rekomendasi lowongan yang cocok dari tool pencarian dan saran skill yang perlu ditingkatkan."
+        kandidat_tag = "User"
         
-        Teks CV User:
-        {cv_text}
-        
-        Lowongan yang tersedia di database:
-        {job_context}
-        
-        Tugas: Berikan rekomendasi lowongan yang cocok dan saran skill yang perlu ditingkatkan.
-        """
-        
-    res = llm.invoke(prompt)
-    return {"messages": [AIMessage(content=res.content)]}
+    system_prompt = prompt_template.compile(
+        role_title=role_title,
+        kandidat_tag=kandidat_tag,
+        cv_text=cv_text,
+        task_instruction=task_instruction
+    )
+    
+    # Buat agent yang akan memakai tool pencocokan CV
+    consultant_agent = create_react_agent(llm, tools=[match_jobs_by_cv], prompt=system_prompt)
+    
+    langfuse_handler = CallbackHandler()
+    res = consultant_agent.invoke(
+        {"messages": state.get("messages", [])}, 
+        config={"callbacks": [langfuse_handler]}
+    )
+    
+    return {"messages": [res["messages"][-1]]}
