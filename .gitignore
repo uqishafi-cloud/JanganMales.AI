@@ -19,6 +19,6 @@ venv/
 # OS files
 .DS_Store
 
-# Test/Simulation scripts (opsional, jika tidak ingin masuk ke production)
+# Test/Simulation scripts
 test_sql_agent.py
 simulate_janganmales.py
