@@ -1,15 +1,24 @@
-# Environments
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
 env/
 venv/
-
-# Dataset & Caches
-__pycache__/
 .pytest_cache/
-*.pyc
-
 *.egg-info/
 
-# Environment Variables (Untuk API Keys nanti)
+# Env & Secrets
 .env
-__pycache__
+.python-version
+
+# OS files
 .DS_Store
+
+# Test/Simulation scripts (opsional, jika tidak ingin masuk ke production)
+test_sql_agent.py
+simulate_janganmales.py
