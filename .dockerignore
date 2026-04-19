@@ -22,8 +22,9 @@ venv/
 # Large files in your root
 google-cloud-cli-darwin-arm.tar.gz
 google-cloud-sdk/
-dataset/
 
 # Test/Simulation scripts
 test_sql_agent.py
 simulate_janganmales.py
+accuracy_test_agent.py
+stress_test_agent.py

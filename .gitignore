@@ -18,3 +18,5 @@ venv/
 # Test/Simulation scripts
 test_sql_agent.py
 simulate_janganmales.py
+accuracy_test_agent.py
+stress_test_agent.py
