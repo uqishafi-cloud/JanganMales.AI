@@ -9,10 +9,10 @@ def supervisor_node(state: GraphState):
     print("[LOG] Supervisor Agent aktif.")
     user_msg = state["messages"][-1].content
     
-    # Prioritas ke Consultant jika ada CV
-    if state.get("cv_context"):
-        print("[LOG] CV terdeteksi, mengarahkan ke Consultant Agent.")
-        return {"next_route": "consultant_agent"}
+    # hapus prioritas paksa (hardcode) agar pertanyaan umum atau history chat tidak selalu lari ke Consultant Agent
+    # if state.get("cv_context"):
+    #     print("[LOG] CV terdeteksi, mengarahkan ke Consultant Agent.")
+    #     return {"next_route": "consultant_agent"}
         
     from langfuse import Langfuse
     from langfuse.langchain import CallbackHandler
