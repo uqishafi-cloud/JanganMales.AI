@@ -113,8 +113,6 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             
             if res.status_code == 200:
                 answer = res.json()["reply"]
-                data = res.json()
-                st.toast(f"🔥 [AGENT LOG]: {data['debug_log']}")
                 st.session_state.chat_history.append({"role": "assistant", "content": answer})
                 st.rerun()
             else:
