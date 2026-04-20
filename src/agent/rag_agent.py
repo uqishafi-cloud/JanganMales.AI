@@ -22,6 +22,11 @@ def rag_agent_node(state: GraphState):
     
     # Callback handler untuk langfuse
     langfuse_handler = CallbackHandler()
+
+    print("\n--- DEBUG: ISI HISTORY YANG DIKIRIM KE AGENT ---")
+    for msg in state["messages"]:
+        print(f"[{type(msg).__name__}]: {msg.content[:50]}...") 
+    print("------------------------------------------------\n")
     
     response = rag_agent.invoke(
         {"messages": state["messages"]}, 
