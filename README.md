@@ -27,7 +27,6 @@ Role ini ditujukan bagi para pencari kerja yang ingin mendapatkan bantuan instan
     * **Konsultasi CV:** Diskusi interaktif mengenai cara memperbaiki struktur CV agar lebih profesional dan menarik bagi rekruter.
     * **Bimbingan Karir:** Konsultasi umum mengenai persiapan interview, negosiasi gaji, dan tips dunia kerja.
 
----
 
 ### **2. Role: HR / Recruiter (Login Diperlukan)**
 Role ini memberikan akses ke alat manajemen talenta yang lebih canggih. Untuk masuk sebagai HR, Anda dapat menggunakan akun dummy berikut:
