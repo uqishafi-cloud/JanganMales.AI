@@ -7,6 +7,8 @@ from src.agent.consultant_agent import consultant_node
 
 def supervisor_node(state: GraphState):
     print("[LOG] Supervisor Agent aktif.")
+    import streamlit as st
+    st.write("[LOG] Supervisor Agent aktif.")
     user_msg = state["messages"][-1].content
     
     # hapus prioritas paksa (hardcode) agar pertanyaan umum atau history chat tidak selalu lari ke Consultant Agent

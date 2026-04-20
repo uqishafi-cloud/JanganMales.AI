@@ -13,6 +13,8 @@ from src.tools.consultant_tools import match_jobs_by_cv
 
 def consultant_node(state: GraphState):
     print("[LOG] Consultant Agent aktif.")
+    import streamlit as st
+    st.write("[LOG] Consultant Agent aktif.")
     cv_text = state.get("cv_context", "")
     user_role = state.get("user_role", "jobseeker")
     

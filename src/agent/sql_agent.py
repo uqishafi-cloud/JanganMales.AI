@@ -10,6 +10,8 @@ from langfuse.langchain import CallbackHandler
 
 def sql_agent_node(state: GraphState):
     print("[LOG] SQL Agent aktif.")
+    import streamlit as st
+    st.write("[LOG] SQL Agent aktif.")
     user_role = state.get("user_role", "jobseeker")
     
     # Ambil prompt dari Langfuse agar disembunyikan dari kode
