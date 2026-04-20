@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import json
 
+API_URL = st.secrets["API_URL"]
+
 st.set_page_config(page_title="JanganMales.AI", layout="wide")
 
 if "role" not in st.session_state: st.session_state.role = "jobseeker"
