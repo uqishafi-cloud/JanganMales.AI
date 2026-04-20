@@ -10,11 +10,7 @@ def supervisor_node(state: GraphState):
     import streamlit as st
     st.write("[LOG] Supervisor Agent aktif.")
     user_msg = state["messages"][-1].content
-    
-    # hapus prioritas paksa (hardcode) agar pertanyaan umum atau history chat tidak selalu lari ke Consultant Agent
-    # if state.get("cv_context"):
-    #     print("[LOG] CV terdeteksi, mengarahkan ke Consultant Agent.")
-    #     return {"next_route": "consultant_agent"}
+    user_role = state.get("user_role", "jobseeker")
         
     from langfuse import Langfuse
     from langfuse.langchain import CallbackHandler
@@ -23,7 +19,7 @@ def supervisor_node(state: GraphState):
     langfuse_client = Langfuse()
     prompt_template = langfuse_client.get_prompt("supervisor_agent_prompt", label="latest")
     
-    system_prompt = prompt_template.compile(user_msg=user_msg)
+    system_prompt = prompt_template.compile(user_msg=user_msg, user_role=user_role)
     
     llm = ChatOpenAI(model=os.getenv("LLM_MODEL", "gpt-4o-mini"), temperature=0)
     langfuse_handler = CallbackHandler()
