@@ -120,7 +120,8 @@ elif st.session_state.role == "hr" and hr_menu == "CV Evaluator":
             st.subheader("Area Unggah Dokumen")
             st.caption("Anda dapat mengunggah beberapa file CV sekaligus.")
             batch_files = st.file_uploader(
-                "Unggah CV Kandidat", 
+                "Unggah CV Kandidat",
+                max_upload_size=10, 
                 type=["pdf", "docx", "jpg", "png"], 
                 accept_multiple_files=True,
                 label_visibility="collapsed",
