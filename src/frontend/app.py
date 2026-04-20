@@ -105,6 +105,7 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             
             payload = {
                 "message": user_input,
+                "history": st.session_state.chat_history[:-1],  #tambahan ini
                 "cv_text": st.session_state.cv_text,
                 "role": st.session_state.role
             }

@@ -6,13 +6,19 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
 import PyPDF2, docx, io, uvicorn
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from src.agent.supervisor_agent import janganmales_agent
 
 app = FastAPI(title="JanganMales.AI API")
 
+#tambahan ini
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
 class ChatRequest(BaseModel):
     message: str
+    history: list[ChatMessage] = [] #tambahan ini   
     cv_text: str = ""
     role: str = "jobseeker"
 class EvaluationRequest(BaseModel):
@@ -69,8 +75,19 @@ async def chat_endpoint(req: ChatRequest):
     print(f"[DEBUG API] Pesan masuk: '{req.message}'")
     print(f"[DEBUG API] Panjang teks CV yang diterima: {len(req.cv_text)} karakter")
     
+    # Konversi history dari frontend ke format LangChain
+    messages = []
+    for m in req.history:
+        if m.role == "user":
+            messages.append(HumanMessage(content=m.content))
+        else:
+            messages.append(AIMessage(content=m.content))
+    
+    # Tambahkan pesan terbaru
+    messages.append(HumanMessage(content=req.message))
+
     inputs = {
-        "messages": [HumanMessage(content=req.message)],
+        "messages": messages,
         "cv_context": req.cv_text,
         "user_role": req.role
     }
