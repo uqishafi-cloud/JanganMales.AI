@@ -6,3 +6,4 @@ class GraphState(TypedDict):
     next_route: str
     cv_context: str
     user_role: str 
+    debug_log: str

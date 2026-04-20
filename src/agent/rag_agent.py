@@ -9,7 +9,6 @@ from langfuse.langchain import CallbackHandler
 
 def rag_agent_node(state: GraphState):
     print("[LOG] RAG Agent aktif.")
-    
     # Ambil prompt dari Langfuse agar disembunyikan dari kode
     langfuse_client = Langfuse()
     prompt_template = langfuse_client.get_prompt("rag_agent_prompt", label="latest")
@@ -27,10 +26,11 @@ def rag_agent_node(state: GraphState):
     for msg in state["messages"]:
         print(f"[{type(msg).__name__}]: {msg.content[:50]}...") 
     print("------------------------------------------------\n")
-    
+
     response = rag_agent.invoke(
         {"messages": state["messages"]}, 
         config={"callbacks": [langfuse_handler]}
     )
     
-    return {"messages": [response["messages"][-1]]}
+    return {"messages": [response["messages"][-1]],
+            "debug_log": "[LOG] RAG Agent aktif."}

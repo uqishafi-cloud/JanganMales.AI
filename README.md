@@ -14,6 +14,34 @@ JanganMales.AI adalah platform cerdas berbasis AI yang dirancang untuk membantu 
 *   **Career Consulting**: Memberikan saran perbaikan CV dan strategi karier berdasarkan profil pengguna.
 
 ---
+## 👥 User Roles & Fitur Khusus
+
+Platform **JanganMales.AI** dirancang dengan sistem cerdas yang mampu membedakan kebutuhan pengguna berdasarkan perannya. Berikut adalah pembagian role dan fitur yang tersedia:
+
+### **1. Role: Jobseeker (Tanpa Login)**
+Role ini ditujukan bagi para pencari kerja yang ingin mendapatkan bantuan instan tanpa perlu melakukan proses registrasi atau login.
+
+* **Identifikasi Otomatis:** Chatbot akan mengenali secara otomatis bahwa pengguna adalah seorang *jobseeker*.
+* **Fitur Utama:**
+    * **Pencarian Pekerjaan:** Bertanya langsung kepada AI mengenai lowongan yang relevan berdasarkan skill atau posisi.
+    * **Konsultasi CV:** Diskusi interaktif mengenai cara memperbaiki struktur CV agar lebih profesional dan menarik bagi rekruter.
+    * **Bimbingan Karir:** Konsultasi umum mengenai persiapan interview, negosiasi gaji, dan tips dunia kerja.
+
+
+### **2. Role: HR / Recruiter (Login Diperlukan)**
+Role ini memberikan akses ke alat manajemen talenta yang lebih canggih. Untuk masuk sebagai HR, Anda dapat menggunakan akun dummy berikut:
+
+* **Akun Dummy HR:**
+    * **Username:** `herman`
+    * **Password:** `hermannakal`
+* **Identifikasi Otomatis:** Setelah login, chatbot akan mengubah konteks komunikasinya menjadi asisten rekrutmen/HR.
+* **Fitur Unggulan: CV Evaluator**
+    Fitur ini dirancang khusus untuk mempercepat proses *screening* kandidat dalam jumlah banyak.
+    * **Panel Kiri (Input Kriteria):** HR dapat memasukkan kriteria spesifik pekerjaan, keahlian wajib, dan preferensi kualifikasi yang dicari.
+    * **Panel Kanan (Upload Massal):** Fitur untuk mengunggah banyak file CV sekaligus (format PDF/DOCX).
+    * **Analisis AI:** AI akan melakukan analisa mendalam untuk mencocokkan kriteria di panel kiri dengan data CV di panel kanan, memberikan skor relevansi, dan membantu HR memutuskan kandidat terbaik secara objektif.
+
+---
 
 ## 🏗️ Arsitektur Sistem (Modular Multi-Agent)
 Proyek ini menggunakan paradigma **Multi-Agent Workflow** di mana setiap modul memiliki tanggung jawab spesifik:

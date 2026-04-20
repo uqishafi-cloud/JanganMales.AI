@@ -11,8 +11,8 @@ if "cv_text" not in st.session_state: st.session_state.cv_text = ""
 if "chat_history" not in st.session_state: st.session_state.chat_history = []
 if "user_name" not in st.session_state: st.session_state.user_name = ""
 if "last_processed_file" not in st.session_state: st.session_state.last_processed_file = ""
-
 # Sidebar: Sistem Login & Navigasi
+
 st.sidebar.title("Portal Akses")
 if st.session_state.role == "jobseeker":
     st.sidebar.markdown("---")
@@ -103,6 +103,7 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             st.write(user_input)
         
         with st.spinner("Sistem sedang menganalisis..."):
+            print(f"🔥 [AGENT LOG]:")
             if uploaded_file and uploaded_file.name != st.session_state.last_processed_file:
                 st.toast("Mengekstrak file dokumen...")
                 extracted_text = process_uploaded_cv(uploaded_file)
@@ -223,3 +224,4 @@ elif st.session_state.role == "hr" and hr_menu == "CV Evaluator":
                             st.error(f"Gagal mengevaluasi {file.name}. Status: {res.status_code} | Detail: {res.text}")
                     else:
                         st.error(f"Gagal mengekstrak teks dari {file.name}. Status: {res.status_code} | Detail: {res.text}")
+

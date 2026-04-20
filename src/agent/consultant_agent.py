@@ -47,4 +47,5 @@ def consultant_node(state: GraphState):
         config={"callbacks": [langfuse_handler]}
     )
     
-    return {"messages": [response["messages"][-1]]}
+    return {"messages": [response["messages"][-1]], 
+            "debug_log": "[LOG] Consultant Agent aktif."}
