@@ -69,6 +69,15 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
 
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
+            # --- TAMBAHAN KODE EXPANDER ---
+            # Jika yang membalas adalah AI (assistant) dan ada data agen-nya, munculkan Expander
+            if msg["role"] == "assistant" and "agent_used" in msg:
+                with st.expander("🛠️ Lihat Proses AI (Log Agent)"):
+                    st.write(f"🔍 **Diarahkan ke:** `{msg['agent_used']}`")
+                    st.success(f"Tugas berhasil dieksekusi oleh {msg['agent_used']}!")
+            # ------------------------------
+            
+            # Tampilkan jawaban utama
             st.write(msg["content"])
 
     st.markdown("---")
@@ -112,8 +121,20 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             res = requests.post(f"{API_URL}/chat", json=payload)
             
             if res.status_code == 200:
-                answer = res.json()["reply"]
-                st.session_state.chat_history.append({"role": "assistant", "content": answer})
+                data = res.json()
+                
+                # Mengambil jawaban (mendukung key 'reply' atau 'response' dari API)
+                answer = data.get("reply", data.get("response", "Maaf, ada kesalahan."))
+                
+                # Mengambil nama agen dari Backend (Default jika tidak ada data: "AI Agent")
+                agent_used = data.get("agent_used", "AI Agent")
+                
+                # Menyimpan jawaban DAN nama agen ke dalam history agar bisa dilacak
+                st.session_state.chat_history.append({
+                    "role": "assistant", 
+                    "content": answer,
+                    "agent_used": agent_used
+                })
                 st.rerun()
             else:
                 st.error("Gagal terhubung ke server utama.")
