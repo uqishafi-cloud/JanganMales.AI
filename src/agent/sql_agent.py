@@ -35,4 +35,4 @@ def sql_agent_node(state: GraphState):
     )
     
     return {"messages": [response["messages"][-1]],
-            "debug_log": "[LOG] SQL Agent aktif."}
+            "debug_log": "🤖 SQL Data Agent"}

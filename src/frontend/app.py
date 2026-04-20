@@ -73,7 +73,6 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             if msg["role"] == "assistant" and "debug_log" in msg:
                 with st.expander("🛠️ Lihat Proses AI (Log Agent)"):
                     st.write(f"🔍 **Diarahkan ke:** `{msg['debug_log']}`")
-                    st.success(f"Tugas berhasil dieksekusi oleh {msg['debug_log']}!")
             
             st.write(msg["content"])
 

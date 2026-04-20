@@ -48,4 +48,4 @@ def consultant_node(state: GraphState):
     )
     
     return {"messages": [response["messages"][-1]], 
-            "debug_log": "[LOG] Consultant Agent aktif."}
+            "debug_log": "💼 Consultant HR Agent"}
