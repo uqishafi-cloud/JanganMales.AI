@@ -11,8 +11,8 @@ if "cv_text" not in st.session_state: st.session_state.cv_text = ""
 if "chat_history" not in st.session_state: st.session_state.chat_history = []
 if "user_name" not in st.session_state: st.session_state.user_name = ""
 if "last_processed_file" not in st.session_state: st.session_state.last_processed_file = ""
-
 # Sidebar: Sistem Login & Navigasi
+
 st.sidebar.title("Portal Akses")
 if st.session_state.role == "jobseeker":
     st.sidebar.markdown("---")
@@ -112,7 +112,10 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             res = requests.post(f"{API_URL}/chat", json=payload)
             
             if res.status_code == 200:
-                answer = res.json()["reply"]
+                data = res.json()
+                if "debug_log" in data:
+                        print(f"🔥 [AGENT LOG]: {data['debug_log']}")
+                answer = data["reply"]
                 st.session_state.chat_history.append({"role": "assistant", "content": answer})
                 st.rerun()
             else:
@@ -203,6 +206,3 @@ elif st.session_state.role == "hr" and hr_menu == "CV Evaluator":
                     else:
                         st.error(f"Gagal mengekstrak teks dari {file.name}. Status: {res.status_code} | Detail: {res.text}")
 
-    if res.status_code == 200:
-        data = res.json()
-        print(data.get("debug_log", "Tidak ada log dari agen"))

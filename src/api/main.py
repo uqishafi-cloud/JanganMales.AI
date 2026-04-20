@@ -93,7 +93,8 @@ async def chat_endpoint(req: ChatRequest):
     }
     try:
         result = janganmales_agent.invoke(inputs)
-        return {"reply": result["messages"][-1].content}
+        return {"reply": result["messages"][-1].content,
+                "debug_log": result.get("debug_log", "")}
     except Exception as e:
         print(f"[ERROR] Agent gagal: {e}")
         raise HTTPException(status_code=500, detail="Terjadi kesalahan pada sistem agen.")
