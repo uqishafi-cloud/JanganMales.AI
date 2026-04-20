@@ -198,6 +198,6 @@ elif st.session_state.role == "hr" and hr_menu == "CV Evaluator":
                             with st.expander(label_header):
                                 st.write(full_eval)
                         else:
-                            st.error(f"Gagal mengevaluasi {file.name}")
+                            st.error(f"Gagal mengevaluasi {file.name}. Status: {res.status_code} | Detail: {res.text}")
                     else:
-                        st.error(f"Gagal mengekstrak teks dari {file.name}")
+                        st.error(f"Gagal mengekstrak teks dari {file.name}. Status: {res.status_code} | Detail: {res.text}")
