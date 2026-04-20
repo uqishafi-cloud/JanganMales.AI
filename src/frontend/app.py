@@ -73,9 +73,10 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
 
     st.markdown("---")
     
-    with st.expander("📎 Lampirkan CV/Resume (Opsional) - Maks 10MB", expanded=False):
+    with st.expander("📎 Lampirkan CV/Resume (Opsional)", expanded=False):
         uploaded_file = st.file_uploader(
             "Pilih file dokumen Anda", 
+            max_upload_size=10, 
             type=["pdf", "docx", "jpg", "jpeg", "png"],
             label_visibility="collapsed" # Menyembunyikan judul bawaan agar lebih bersih
         )
