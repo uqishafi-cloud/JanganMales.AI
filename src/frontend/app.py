@@ -94,8 +94,7 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             st.write(user_input)
         
         with st.spinner("Sistem sedang menganalisis..."):
-            data = res.json()
-            print(f"🔥 [AGENT LOG]: {data['debug_log']}")
+            print(f"🔥 [AGENT LOG]:")
             if uploaded_file and uploaded_file.name != st.session_state.last_processed_file:
                 st.toast("Mengekstrak file dokumen...")
                 extracted_text = process_uploaded_cv(uploaded_file)
@@ -114,7 +113,6 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             res = requests.post(f"{API_URL}/chat", json=payload)
             
             if res.status_code == 200:
-                
                 answer = res.json()["reply"]
                 st.session_state.chat_history.append({"role": "assistant", "content": answer})
                 st.rerun()
