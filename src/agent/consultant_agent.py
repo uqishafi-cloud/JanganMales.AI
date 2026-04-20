@@ -1,4 +1,5 @@
 import os
+from agent import state
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
@@ -40,9 +41,11 @@ def consultant_node(state: GraphState):
     consultant_agent = create_react_agent(llm, tools=[match_jobs_by_cv], prompt=system_prompt)
     
     langfuse_handler = CallbackHandler()
-    res = consultant_agent.invoke(
-        {"messages": state.get("messages", [])}, 
+
+    recent_history = state["messages"][-6:]
+    response = consultant_agent.invoke(
+        {"messages": recent_history}, 
         config={"callbacks": [langfuse_handler]}
     )
     
-    return {"messages": [res["messages"][-1]]}
+    return {"messages": [response["messages"][-1]]}
