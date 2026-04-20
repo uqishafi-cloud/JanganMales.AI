@@ -78,6 +78,36 @@ async def chat_endpoint(req: ChatRequest):
         print(f"[ERROR] Agent gagal: {e}")
         raise HTTPException(status_code=500, detail="Terjadi kesalahan pada sistem agen.")
     
+@app.post("/evaluate-cvs")
+async def evaluate_cvs(req: EvaluationRequest):
+    try:
+        from langchain_openai import ChatOpenAI
+        
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        
+        eval_prompt = f"""
+        Kamu adalah Asisten HR Senior yang bertugas menyortir CV kandidat secara objektif.
+        
+        KRITERIA PEKERJAAN YANG DICARI:
+        {req.criteria}
+        
+        TEKS CV KANDIDAT:
+        {req.cv_text}
+        
+        Tugasmu:
+        1. Berikan KESIMPULAN SINGKAT di awal: "SANGAT COCOK", "KURANG COCOK", atau "TIDAK COCOK".
+        2. Buat daftar (bullet points) poin-poin kriteria apa saja yang TERPENUHI oleh kandidat.
+        3. Buat daftar (bullet points) poin-poin kriteria apa saja yang TIDAK TERPENUHI (jika ada).
+        4. Berikan sedikit saran apakah kandidat ini layak dipanggil wawancara.
+        """
+        
+        response = llm.invoke(eval_prompt)
+        return {"evaluation": response.content}
+        
+    except Exception as e:
+        print(f"[ERROR API] Gagal evaluasi batch: {e}")
+        raise HTTPException(status_code=500, detail="Terjadi kesalahan saat evaluasi.")
+        
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     uvicorn.run("src.api.main:app", host="0.0.0.0", port=port)
