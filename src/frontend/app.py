@@ -93,7 +93,7 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
         with st.chat_message("user"): 
             st.write(user_input)
         
-        with st.spinner(f"Sistem sedang menganalisis... {data['debug_log']}"):
+        with st.spinner(f"Sistem sedang menganalisis..."):
             if uploaded_file and uploaded_file.name != st.session_state.last_processed_file:
                 st.toast("Mengekstrak file dokumen...")
                 extracted_text = process_uploaded_cv(uploaded_file)
