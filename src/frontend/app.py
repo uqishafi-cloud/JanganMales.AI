@@ -103,7 +103,6 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             st.write(user_input)
         
         with st.spinner("Sistem sedang menganalisis..."):
-            print(f"🔥 [AGENT LOG]:")
             if uploaded_file and uploaded_file.name != st.session_state.last_processed_file:
                 st.toast("Mengekstrak file dokumen...")
                 extracted_text = process_uploaded_cv(uploaded_file)
@@ -128,13 +127,13 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
                 answer = data.get("reply", data.get("response", "Maaf, ada kesalahan."))
                 
                 # Mengambil nama agen dari Backend (Default jika tidak ada data: "AI Agent")
-                agent_used = data.get("agent_used", "AI Agent")
+                agent_used = data.get("debug_log", "AI Agent")
                 
                 # Menyimpan jawaban DAN nama agen ke dalam history agar bisa dilacak
                 st.session_state.chat_history.append({
                     "role": "assistant", 
                     "content": answer,
-                    "agent_used": agent_used
+                    "debug_log": agent_used
                 })
                 st.rerun()
             else:
