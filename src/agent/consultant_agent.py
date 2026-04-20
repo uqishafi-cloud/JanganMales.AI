@@ -13,8 +13,6 @@ from src.tools.consultant_tools import match_jobs_by_cv
 
 def consultant_node(state: GraphState):
     print("[LOG] Consultant Agent aktif.")
-    import streamlit as st
-    st.write("[LOG] Consultant Agent aktif.")
     cv_text = state.get("cv_context", "")
     user_role = state.get("user_role", "jobseeker")
     
@@ -49,4 +47,5 @@ def consultant_node(state: GraphState):
         config={"callbacks": [langfuse_handler]}
     )
     
-    return {"messages": [response["messages"][-1]]}
+    return {"messages": [response["messages"][-1]], 
+            "debug_log": "[LOG] Consultant Agent aktif."}

@@ -202,3 +202,7 @@ elif st.session_state.role == "hr" and hr_menu == "CV Evaluator":
                             st.error(f"Gagal mengevaluasi {file.name}. Status: {res.status_code} | Detail: {res.text}")
                     else:
                         st.error(f"Gagal mengekstrak teks dari {file.name}. Status: {res.status_code} | Detail: {res.text}")
+
+    if res.status_code == 200:
+        data = res.json()
+        print(data.get("debug_log", "Tidak ada log dari agen"))
