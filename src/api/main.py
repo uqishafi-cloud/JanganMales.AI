@@ -15,7 +15,10 @@ class ChatRequest(BaseModel):
     message: str
     cv_text: str = ""
     role: str = "jobseeker"
-
+class EvaluationRequest(BaseModel):
+    criteria: str
+    cv_text: str
+    
 @app.post("/upload-cv")
 async def process_cv(file: UploadFile = File(...)):
     filename = file.filename.lower()
