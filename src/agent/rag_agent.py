@@ -23,11 +23,8 @@ def rag_agent_node(state: GraphState):
     # Callback handler untuk langfuse
     langfuse_handler = CallbackHandler()
     
-    recent_history = state["messages"][-6:]
-    
-    # Jalankan agent dengan riwayat obrolan yang sudah dibatasi dan pass callbacks
     response = rag_agent.invoke(
-        {"messages": recent_history}, 
+        {"messages": state["messages"]}, 
         config={"callbacks": [langfuse_handler]}
     )
     

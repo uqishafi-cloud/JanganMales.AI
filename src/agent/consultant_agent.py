@@ -42,9 +42,8 @@ def consultant_node(state: GraphState):
     
     langfuse_handler = CallbackHandler()
 
-    recent_history = state["messages"][-6:]
     response = consultant_agent.invoke(
-        {"messages": recent_history}, 
+        {"messages": state["messages"]}, 
         config={"callbacks": [langfuse_handler]}
     )
     
