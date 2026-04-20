@@ -72,8 +72,16 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
             st.write(msg["content"])
 
     st.markdown("---")
-    uploaded_file = st.file_uploader("Sertakan dokumen (CV/Resume) bersama pesan Anda (Opsional)", type=["pdf", "docx", "jpg", "jpeg", "png"])
     
+    with st.expander("📎 Lampirkan CV/Resume (Opsional) - Maks 10MB", expanded=False):
+        uploaded_file = st.file_uploader(
+            "Pilih file dokumen Anda", 
+            type=["pdf", "docx", "jpg", "jpeg", "png"],
+            label_visibility="collapsed" # Menyembunyikan judul bawaan agar lebih bersih
+        )
+        if uploaded_file and uploaded_file.size > 10 * 1024 * 1024:
+            st.error("Ukuran file melebihi batas maksimal 10 MB.")
+            uploaded_file = None # Membatalkan file jika kebesaran
     if st.session_state.cv_text:
         st.success("Terdapat CV yang sedang aktif di dalam memori AI.")
 
