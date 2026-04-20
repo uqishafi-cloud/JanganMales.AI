@@ -102,7 +102,8 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
         with st.chat_message("user"): 
             st.write(user_input)
         
-        with st.spinner(f"Sistem sedang menganalisis..."):
+        with st.spinner("Sistem sedang menganalisis..."):
+            print(f"🔥 [AGENT LOG]:")
             if uploaded_file and uploaded_file.name != st.session_state.last_processed_file:
                 st.toast("Mengekstrak file dokumen...")
                 extracted_text = process_uploaded_cv(uploaded_file)
@@ -125,9 +126,6 @@ if st.session_state.role == "jobseeker" or (st.session_state.role == "hr" and hr
                 
                 # Mengambil jawaban (mendukung key 'reply' atau 'response' dari API)
                 answer = data.get("reply", data.get("response", "Maaf, ada kesalahan."))
-                
-                if "debug_log" in data:
-                    st.toast(f"🔥 [AGENT LOG]: {data['debug_log']}")
                 
                 # Mengambil nama agen dari Backend (Default jika tidak ada data: "AI Agent")
                 agent_used = data.get("agent_used", "AI Agent")
