@@ -22,7 +22,9 @@ if st.session_state.role == "jobseeker":
     
     if st.sidebar.button("Login"):
         try:
-            with open("hr_users.json", "r") as f:
+            import os
+            db_path = os.path.join(os.path.dirname(__file__), "hr_users.json")
+            with open(db_path, "r") as f:
                 hr_db = json.load(f)
             if username in hr_db and hr_db[username].get("password") == password:
                 if hr_db[username].get("role") == "hr":
