@@ -93,8 +93,22 @@ async def chat_endpoint(req: ChatRequest):
     }
     try:
         result = janganmales_agent.invoke(inputs)
-        return {"reply": result["messages"][-1].content,
-                "debug_log": result.get("debug_log", "")}
+        
+        # Ambil 'next_route' dari state graph untuk mengetahui agen yang tereksekusi
+        agent_name_mapping = {
+            "sql_agent": "🤖 SQL Data Agent",
+            "rag_agent": "📚 RAG General Agent",
+            "consultant_agent": "💼 Consultant HR Agent"
+        }
+        
+        raw_agent = result.get("next_route", "AI Agent")
+        agent_used = agent_name_mapping.get(raw_agent, raw_agent)
+        
+        return {
+            "reply": result["messages"][-1].content,
+            "debug_log": result.get("debug_log", ""),
+            "agent_used": agent_used
+        }
     except Exception as e:
         print(f"[ERROR] Agent gagal: {e}")
         raise HTTPException(status_code=500, detail="Terjadi kesalahan pada sistem agen.")
